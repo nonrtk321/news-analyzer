@@ -469,6 +469,91 @@
     letter-spacing: 1px;
   }
   footer span { color: var(--accent); }
+
+  /* ── VERSION BADGE ── */
+  .version-badge {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: var(--accent);
+    border: 1px solid rgba(200,169,110,.4);
+    background: rgba(200,169,110,.08);
+    padding: 4px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .version-badge:hover {
+    background: rgba(200,169,110,.18);
+    border-color: var(--accent);
+  }
+
+  /* ── CHANGELOG ── */
+  .cl-entry {
+    padding: 16px 0;
+    border-bottom: 1px solid #252d3d;
+  }
+  .cl-entry:last-of-type { border-bottom: none; }
+  .cl-entry.current .cl-ver { color: #c8a96e; }
+  .cl-ver {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 14px;
+    font-weight: 600;
+    color: #e8ecf5;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 2px;
+  }
+  .cl-tag {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    background: rgba(200,169,110,.15);
+    color: #c8a96e;
+    border: 1px solid rgba(200,169,110,.3);
+    padding: 2px 7px;
+    border-radius: 3px;
+  }
+  .cl-date {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: #6b7a9a;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+  }
+  .cl-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .cl-list li {
+    font-size: 13px;
+    color: #8899bb;
+    padding-left: 14px;
+    position: relative;
+    line-height: 1.6;
+  }
+  .cl-list li::before {
+    content: "▸";
+    position: absolute;
+    left: 0;
+    color: #c8a96e;
+    font-size: 10px;
+    top: 3px;
+  }
+  .cl-list code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    background: rgba(255,255,255,.06);
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: #e8c87a;
+  }
+
 </style>
 </head>
 <body>
@@ -477,7 +562,67 @@
   <div class="logo">Lexis</div>
   <div class="header-sep">|</div>
   <div class="header-title">Thai Political & Legal News Analyzer</div>
+  <div style="margin-left:auto;">
+    <span class="version-badge" onclick="toggleChangelog()" title="ดู Changelog">v1.3.0</span>
+  </div>
 </header>
+
+<!-- CHANGELOG MODAL -->
+<div id="changelog-overlay" onclick="toggleChangelog()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;"></div>
+<div id="changelog-modal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:201;width:min(520px,92vw);background:#1a1f2e;border:1px solid #252d3d;border-radius:14px;padding:32px;max-height:80vh;overflow-y:auto;">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+    <div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:3px;color:#c8a96e;text-transform:uppercase;margin-bottom:4px;">Changelog</div>
+      <div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:#e8ecf5;">Version History</div>
+    </div>
+    <button onclick="toggleChangelog()" style="background:none;border:1px solid #252d3d;color:#6b7a9a;width:32px;height:32px;border-radius:6px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;">✕</button>
+  </div>
+
+  <div class="cl-entry current">
+    <div class="cl-ver">v1.3.0 <span class="cl-tag">current</span></div>
+    <div class="cl-date">14 พ.ค. 2568</div>
+    <ul class="cl-list">
+      <li>เพิ่มหน้า Version History และ Changelog</li>
+      <li>เพิ่ม debug error message แสดง raw API response</li>
+      <li>แสดง error จาก Anthropic API โดยตรง</li>
+    </ul>
+  </div>
+
+  <div class="cl-entry">
+    <div class="cl-ver">v1.2.0</div>
+    <div class="cl-date">14 พ.ค. 2568</div>
+    <ul class="cl-list">
+      <li>เพิ่ม header <code>anthropic-dangerous-direct-browser-access</code> สำหรับ GitHub Pages</li>
+      <li>เพิ่ม JSON bracket extraction แบบ robust</li>
+      <li>เพิ่ม max_tokens เป็น 4000</li>
+    </ul>
+  </div>
+
+  <div class="cl-entry">
+    <div class="cl-ver">v1.1.0</div>
+    <div class="cl-date">14 พ.ค. 2568</div>
+    <ul class="cl-list">
+      <li>แก้ปัญหา JSON ขาดกลางคัน (Unterminated string)</li>
+      <li>ย่อ System Prompt ให้กระชับขึ้น</li>
+      <li>เพิ่ม max_tokens จาก 1000 เป็น 2000</li>
+    </ul>
+  </div>
+
+  <div class="cl-entry">
+    <div class="cl-ver">v1.0.0</div>
+    <div class="cl-date">14 พ.ค. 2568</div>
+    <ul class="cl-list">
+      <li>เปิดตัว Thai Political & Legal News Analyzer</li>
+      <li>วิเคราะห์ข่าวด้วย AI + Analyst dual view</li>
+      <li>Impact Scale, Stakeholder Table, Watch Out</li>
+      <li>รองรับ 5 ประเภทข่าว: การเมือง / กฎหมาย / นิติบัญญัติ / ครม. / รัฐธรรมนูญ</li>
+    </ul>
+  </div>
+
+  <div style="margin-top:20px;padding-top:16px;border-top:1px solid #252d3d;font-family:'IBM Plex Mono',monospace;font-size:10px;color:#6b7a9a;letter-spacing:1px;">
+    Lexis · Powered by Claude Sonnet · by nonrtk321
+  </div>
+</div>
 
 <div class="main">
 
@@ -729,6 +874,14 @@ function renderOutput(d) {
       <p class="summary-text">${d.watch_out}</p>
     </div>` : ''}
   `;
+}
+
+function toggleChangelog() {
+  const modal = document.getElementById('changelog-modal');
+  const overlay = document.getElementById('changelog-overlay');
+  const isOpen = modal.style.display === 'block';
+  modal.style.display = isOpen ? 'none' : 'block';
+  overlay.style.display = isOpen ? 'none' : 'block';
 }
 </script>
 </body>
