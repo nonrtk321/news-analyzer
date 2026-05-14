@@ -571,11 +571,19 @@ async function analyzeNews() {
     });
 
     const data = await response.json();
+
+    if (!response.ok || data.error) {
+      const errMsg = data.error?.message || JSON.stringify(data);
+      throw new Error('API Error: ' + errMsg);
+    }
+
     const raw = data.content?.[0]?.text || '';
+    if (!raw) throw new Error('API ตอบกลับว่าง: ' + JSON.stringify(data));
+
     const clean = raw.replace(/```json|```/g, '').trim();
     const start = clean.indexOf('{');
     const end = clean.lastIndexOf('}');
-    if (start === -1 || end === -1) throw new Error('ไม่พบ JSON ในคำตอบ');
+    if (start === -1 || end === -1) throw new Error('Claude ตอบว่า: ' + clean.slice(0, 300));
     const result = JSON.parse(clean.slice(start, end + 1));
 
     renderOutput(result);
